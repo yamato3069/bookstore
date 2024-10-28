@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<link th:href="@{/css/bookpurchase.css}" rel="stylesheet">
+</head>
+
+<body>
+	<h2>購入画面</h2>
+	<div class="order-container">
+		カート
+		<div class="item-container">
+			<div class="item" th:each="item : ${cartList}" th:if="${user == null}">
+				<div>
+					<img th:src="${item.value['imagePath']}" alt="${item.value.title}の画像"
+						style="width:200px; height:auto;" />
+					<p>書籍ID: <span th:text="${item.key}"></span></p>
+					<p>タイトル: <span th:text="${item.value.title}"></span></p>
+					<p>著者名: <span th:text="${item.value.authorName}"></span></p>
+					<p>価格: <span th:text="${#numbers.formatDecimal(item.value.price, 0, 0)} + '円'" id="price"></span>
+					</p>
+					<p>数量: <span th:text="${item.value.quantity}" id="quantity"></span></p>
+				</div>
+				<div class="delete-container">
+					<form th:action="@{/bookpurchase/removeItem}" method="post">
+						<input type="hidden" name="bookId" th:value="${item.key}" />
+						<button type="submit" class="delete">削除</button>
+					</form>
+				</div>
+			</div>
+
+			<div class="item" th:each="item : ${cartList}" th:if="${user != null}">
+				<div>
+					<img th:src="${item.imagePath}" alt="${item.title}の画像" style="width:200px; height:auto;" />
+					<p>書籍ID: <span th:text="${item.bookId}"></span></p>
+					<p>タイトル: <span th:text="${item.title}"></span></p>
+					<p>著者名: <span th:text="${item.authorName}"></span></p>
+					<p>価格: <span th:text="${#numbers.formatDecimal(item.price, 0, 0)} + '円'" id="price"></span></p>
+					<p>数量: <span th:text="${item.quantity}" id="quantity"></span></p>
+				</div>
+				<div class="delete-container">
+					<form th:action="@{/bookpurchase/removeItem}" method="post">
+						<input type="hidden" name="bookId" th:value="${item.bookId}" />
+						<button type="submit" class="delete">削除</button>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<div class="amount-container">
+			合計金額　<span id="total-amount"></span>
+			<button type="button" class="purchase">購入</button>
+		</div>
+	</div>
+
+	<script src="/js/bookamount.js" defer></script>
+</body>
+
+</html>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.BookPurchaseMapper">
+
+	<select id="getCart"
+		resultType="com.example.demo.entity.CartEntity">
+		SELECT
+		cart_id AS cartId,
+		user_id AS userId,
+		book_id AS
+		bookId,
+		quantity,
+		price,
+		title,
+		author_name AS authorName,
+		image_path AS
+		imagePath
+		FROM
+		cart
+		WHERE
+		user_id = #{userId}
+	</select>
+
+	<select id="getCartByBookId"
+		resultType="com.example.demo.entity.CartEntity">
+		SELECT
+		cart_id AS cartId,
+		user_id AS userId,
+		book_id AS bookId,
+		quantity,
+		price,
+		title,
+		author_name AS authorName,
+		image_path AS
+		imagePath
+		FROM
+		cart
+		WHERE
+		user_id = #{userId}
+		AND
+		book_id = #{bookId}
+	</select>
+
+	<insert id="addCart"
+		parameterType="com.example.demo.entity.CartEntity">
+		INSERT
+		INTO cart(
+		user_id,
+		book_id,
+		quantity,
+		price,
+		title,
+		author_name,
+		image_path
+		)VALUES (
+		#{userId},
+		#{bookId},
+		#{quantity},
+		#{price},
+		#{title},
+		#{authorName},
+		#{imagePath}
+		)
+		ON DUPLICATE KEY UPDATE
+		quantity = #{quantity},
+		price = #{price},
+		title = #{title},
+		author_name =
+		#{authorName},
+		image_path = #{imagePath};
+	</insert>
+
+	<update id="updateCartQuantity">
+		UPDATE cart
+		SET quantity = #{quantity}
+		WHERE user_id = #{userId}
+		AND book_id = #{bookId}
+	</update>
+
+	<delete id="deleteCartItem">
+		DELETE FROM cart
+		WHERE user_id = #{userId}
+		AND book_id = #{bookId}
+	</delete>
+
+</mapper>

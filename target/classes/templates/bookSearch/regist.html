@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Insert title here</title>
+	<link th:href="@{/css/searchbook.css}" rel="stylesheet">
+</head>
+
+<body>
+	<div class="search-container">
+		<h1>ほんや</h1>
+		<div class="account-container">
+			<span th:text="'ようこそ ' + (${user != null} ? ${user.getUserName()} : 'ゲスト') + 'さん'"></span>
+		</div>
+		<div>
+			<div class="cart">
+				<a href="/bookpurchase/regist">
+					<img src="https://img.icons8.com/ios-filled/50/2589d0/shopping-cart.png" alt="カートアイコン" />
+				</a>
+				<span id="cart-count" class="cart-count">0</span>
+			</div>
+			<form action="/bookSearch/Search" method="post" class="search-form-1">
+				<div class="search-bar">
+					<label for="title"></label>
+					<input type="text" id="title" name="title" placeholder="タイトルを入力">
+					<button class="search" type="submit" aria-label="検索">検索</button>
+				</div>
+				<button type="button" class="accordion" style="width: 150px;">詳細検索</button>
+				<div class="panel">
+					<fieldset>
+						<legend>詳細検索</legend>
+						<label for="authorName">著者名</label>
+						<input type="text" id="authorName" name="authorName" placeholder="著者名を入力">
+
+						<label for="categoryName">カテゴリ名</label>
+						<input type="text" id="categoryName" name="categoryName" placeholder="カテゴリ名を入力">
+					</fieldset>
+				</div>
+			</form>
+		</div>
+
+		<div>
+			<ul class="list-9" th:if="${bookList} != null">
+				<li th:each="book : ${bookList}">
+					<img th:src="${book.imagePath}" alt="${book.title}の画像" style="width:200px; height:auto;" />
+					<div class="info">
+						<span th:text="${book.title}"></span><br>
+						<span th:text="'著者: ' + ${book.authorName}"></span>
+						<span th:text="'価格: ' + ${#numbers.formatDecimal(book.price, 0, 0)} + '円'"></span>
+						<span th:text="'在庫：' + ${book.stock} + '冊'"></span>
+					</div>
+					<button type="button" class="add-to-cart" th:data-book-id="${book.bookId}"
+						th:data-book-price="${book.price}" th:data-book-stock="${book.stock}"
+						th:data-book-title="${book.title}" th:data-book-authorName="${book.authorName}"
+						th:data-book-imagePath="${book.imagePath}">カートに入れる</button>
+				</li>
+			</ul>
+		</div>
+
+		<footer class="footer">
+			<p>
+				カートアイコン by Icons8
+			</p>
+		</footer>
+	</div>
+	<script src="/js/bookSearch.js" defer></script>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.BookSearchMapper">
+
+	<select id="searchBooks"
+		resultType="com.example.demo.entity.BookEntity">
+		SELECT
+		b.book_id AS bookId,
+		b.title,
+		b.price,
+		b.published_date AS publishedDate,
+		a.author_name AS authorName,
+		c.category_name AS categoryName,
+		b.description,
+		b.stock,
+		b.image_path AS imagePath
+		FROM
+		book b
+		LEFT JOIN
+		author a ON
+		b.author_id = a.author_id
+		LEFT JOIN
+		category c ON b.category_id = c.category_id
+		<where>
+			<if test="title != null and title != ''">
+				b.title LIKE CONCAT('%', #{title}, '%')
+			</if>
+			<if test="authorName != null and authorName != ''">
+				AND a.author_name LIKE CONCAT('%', #{authorName}, '%')
+			</if>
+			<if test="categoryName != null and categoryName != ''">
+				AND c.category_name LIKE CONCAT('%', #{categoryName}, '%')
+			</if>
+		</where>
+
+	</select>
+
+</mapper>
