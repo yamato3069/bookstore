@@ -11,5 +11,6 @@ import com.example.demo.entity.BookEntity;
 public interface BookSearchMapper {
 	
 	public List<BookEntity> searchBooks(BookSearchDto bookSearchDto);
-
+	
+	public BookEntity searchBooksById(Integer bookId);
 }

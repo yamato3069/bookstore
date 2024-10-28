@@ -86,4 +86,31 @@ document.querySelectorAll('.add-to-cart').forEach(button => {
         }
     });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    let currentIndex = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    const slideTrack = document.querySelector('.slide-track');
+
+    function showSlide(index) {
+        slideTrack.style.transform = `translateX(-${index * 100}%)`;
+    }
+
+    document.querySelector('.prev').addEventListener('click', () => {
+        currentIndex = (currentIndex === 0) ? totalSlides - 1 : currentIndex - 1;
+        showSlide(currentIndex);
+    });
+
+    document.querySelector('.next').addEventListener('click', () => {
+        currentIndex = (currentIndex === totalSlides - 1) ? 0 : currentIndex + 1;
+        showSlide(currentIndex);
+    });
+
+    setInterval(() => {
+        currentIndex = (currentIndex + 1) % totalSlides;
+        showSlide(currentIndex);
+    }, 5000);
+});
+
 cartCountElement.style.display = 'none';

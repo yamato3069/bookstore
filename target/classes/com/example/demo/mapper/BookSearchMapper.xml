@@ -34,5 +34,30 @@
 		</where>
 
 	</select>
+	
+	<select id="searchBooksById"
+		resultType="com.example.demo.entity.BookEntity">
+		SELECT
+		b.book_id AS bookId,
+		b.title,
+		b.price,
+		b.published_date AS publishedDate,
+		a.author_name AS authorName,
+		c.category_name AS categoryName,
+		b.description,
+		b.stock,
+		b.image_path AS imagePath
+		FROM
+		book b
+		LEFT JOIN
+		author a ON
+		b.author_id = a.author_id
+		LEFT JOIN
+		category c ON b.category_id = c.category_id
+		WHERE
+		book_id = #{bookId}
+
+	</select>
+	
 
 </mapper>
