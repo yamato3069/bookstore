@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<title>本の詳細ページ</title>
+	<link th:href="@{/css/bookDetails.css}" rel="stylesheet">
+</head>
+
+<body>
+	<div class="details-container">
+		<h2 th:text="${book.title}">本のタイトル</h2>
+
+		<div class="book-info">
+			<img th:src="${book.imagePath}" alt="本の画像" style="width:300px; height:auto;" />
+			<div class="info">
+				<p><strong>著者名:</strong> <span th:text="${book.authorName}">著者名</span></p>
+				<p><strong>価格:</strong> <span th:text="'¥' + ${#numbers.formatDecimal(book.price, 0, 0)}">価格</span></p>
+				<p><strong>在庫:</strong> <span th:text="${book.stock} + '冊'">在庫</span></p>
+				<p><strong>説明: この本はすごい！</strong></p>
+				<p th:text="${book.description}">本の説明</p>
+			</div>
+		</div>
+
+		<button type="button" class="add-to-cart" th:data-book-id="${book.bookId}" th:data-book-price="${book.price}"
+			th:data-book-stock="${book.stock}" th:data-book-title="${book.title}"
+			th:data-book-authorName="${book.authorName}" th:data-book-imagePath="${book.imagePath}">
+			カートに入れる
+		</button>
+
+		<a href="/bookSearch/regist" class="back-to-search">検索結果に戻る</a>
+	</div>
+</body>
+
+</html>
