@@ -7,13 +7,12 @@
 	<link th:href="@{/css/searchbook.css}" rel="stylesheet">
 </head>
 
-<body class="change">
+<body>
 	<div class="search-container">
 		<h1>ほんや</h1>
 		<div class="account-container">
 			<span th:text="'ようこそ ' + (${user != null} ? ${user.getUserName()} : 'ゲスト') + 'さん'"></span>
 		</div>
-
 		<div>
 			<div class="cart">
 				<a href="/bookpurchase/regist">
@@ -21,33 +20,6 @@
 				</a>
 				<span id="cart-count" class="cart-count">0</span>
 			</div>
-			<div class="recommend-container">
-				<h3>おすすめ</h3>
-				<div class="slider">
-					<button class="prev">&#10094;</button>
-					<div class="slide-track">
-						<!-- 仮データのスライド -->
-						<div class="slide">
-							<img src="https://via.placeholder.com/150" alt="Book 1">
-							<span>仮の本1</span>
-						</div>
-						<div class="slide">
-							<img src="https://via.placeholder.com/150" alt="Book 2">
-							<span>仮の本2</span>
-						</div>
-						<div class="slide">
-							<img src="https://via.placeholder.com/150" alt="Book 3">
-							<span>仮の本3</span>
-						</div>
-						<div class="slide">
-							<img src="https://via.placeholder.com/150" alt="Book 4">
-							<span>仮の本4</span>
-						</div>
-					</div>
-					<button class="next">&#10095;</button>
-				</div>
-			</div>
-
 			<form action="/bookSearch/Search" method="post" class="search-form-1">
 				<div class="search-bar">
 					<label for="title"></label>
@@ -71,15 +43,13 @@
 		<div>
 			<ul class="list-9" th:if="${bookList} != null">
 				<li th:each="book : ${bookList}">
-					<a th:href="@{/bookdetail/bookDetail/{bookId}(bookId=${book.bookId})}" style="text-decoration: none; color: inherit;">
-						<img th:src="${book.imagePath}" alt="${book.title}の画像" style="width:200px; height:auto;" />
-						<div class="info">
-							<span th:text="${book.title}"></span><br>
-							<span th:text="'著者: ' + ${book.authorName}"></span>
-							<span th:text="'価格: ' + ${#numbers.formatDecimal(book.price, 0, 0)} + '円'"></span>
-							<span th:text="'在庫：' + ${book.stock} + '冊'"></span>
-						</div>
-					</a>
+					<img th:src="${book.imagePath}" alt="${book.title}の画像" style="width:200px; height:auto;" />
+					<div class="info">
+						<span th:text="${book.title}"></span><br>
+						<span th:text="'著者: ' + ${book.authorName}"></span>
+						<span th:text="'価格: ' + ${#numbers.formatDecimal(book.price, 0, 0)} + '円'"></span>
+						<span th:text="'在庫：' + ${book.stock} + '冊'"></span>
+					</div>
 					<button type="button" class="add-to-cart" th:data-book-id="${book.bookId}"
 						th:data-book-price="${book.price}" th:data-book-stock="${book.stock}"
 						th:data-book-title="${book.title}" th:data-book-authorName="${book.authorName}"
