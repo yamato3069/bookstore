@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.mapper.BookOrderMapper">
+
+	<insert id="insertOrders"
+		parameterType="com.example.demo.entity.OrdersEntity"
+		useGeneratedKeys="true" keyProperty="orderId">
+		INSERT INTO
+		orders(
+		user_id,
+		order_date,
+		total_amount
+		)VALUES(
+		#{userId},
+		#{orderDate},
+		#{totalAmount}
+		)
+	</insert>
+
+	<insert id="insertOrderItems"
+		parameterType="com.example.demo.entity.OrderItemEntity">
+		INSERT INTO
+		order_item(
+		order_id,
+		book_id,
+		quantity,
+		price
+		)VALUES(
+		#{orderId},
+		#{bookId},
+		#{quantity},
+		#{price}
+		)
+	</insert>
+
+</mapper>
