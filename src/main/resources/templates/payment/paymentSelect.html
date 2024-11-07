@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>決済方法の選択</title>
+	<link th:href="@{/css/payment.css}" rel="stylesheet">
+</head>
+
+<body>
+
+	<h2>支払い方法を選択してください</h2>
+
+	<div class="payment-container">
+		<form id="payment-form">
+			<div class="payment-option">
+				<input type="radio" id="credit-card" name="payment-method" value="credit-card" required>
+				<label for="credit-card">クレジットカード</label>
+			</div>
+			<div class="payment-option">
+				<input type="radio" id="paypal" name="payment-method" value="paypal">
+				<label for="Paypal">PayPal</label>
+			</div>
+			<div class="payment-option">
+				<input type="radio" id="bank-transfer" name="payment-method" value="bank-transfer">
+				<label for="bank-transfer">銀行振込</label>
+			</div>
+			<div class="payment-option">
+				<input type="radio" id="cash-on-delivery" name="payment-method" value="cash-on-delivery">
+				<label for="cash-on-delivery">代引き</label>
+			</div>
+
+			<button type="submit">確認</button>
+		</form>
+	</div>
+
+	<script src="/js/payment.js" defer></script>
+
+</body>
+
+</html>

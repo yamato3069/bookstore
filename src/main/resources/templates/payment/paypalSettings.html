@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayPal設定</title>
+    <link rel="stylesheet" href="/css/payment.css">
+</head>
+<body>
+
+    <h2>PayPalアカウント情報を入力してください</h2>
+
+    <form action="/payment/purchase" method="post">
+        <div class="form-group">
+            <label for="paypal-email">PayPalメールアドレス</label>
+            <input type="email" id="paypal-email" name="paypalEmail" required placeholder="example@mail.com">
+            <input type="hidden" id="paymentType" name="paymentType" value="paypal">
+        </div>
+
+        <button type="submit">確認</button>
+    </form>
+
+</body>
+</html>

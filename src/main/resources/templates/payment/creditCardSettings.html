@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>クレジットカード設定</title>
+    <link rel="stylesheet" href="/css/payment.css">
+</head>
+<body>
+
+    <h2>クレジットカード情報を入力してください</h2>
+
+    <form action="/payment/purchase" method="post">
+        <div class="form-group">
+            <label for="card-number">カード番号</label>
+            <input type="text" id="card-number" name="cardNumber" required pattern="\d{16}" placeholder="1234 5678 1234 5678">
+        </div>
+
+        <div class="form-group">
+            <label for="expiry-date">有効期限 (MM/YY)</label>
+            <input type="text" id="expiry-date" name="expiryDate" required pattern="\d{2}/\d{2}" placeholder="MM/YY">
+        </div>
+
+        <div class="form-group">
+            <label for="cvc">セキュリティコード (CVC)</label>
+            <input type="text" id="cvc" name="cvc" required pattern="\d{3}" placeholder="CVC">
+        </div>
+
+        <div class="form-group">
+            <label for="card-holder">カード名義</label>
+            <input type="text" id="card-holder" name="cardHolder" required placeholder="Taro Yamada">
+        </div>
+        <input type="hidden" id="paymentType" name="paymentType" value="cledit-card">
+
+        <button type="submit">確認</button>
+    </form>
+
+</body>
+</html>
