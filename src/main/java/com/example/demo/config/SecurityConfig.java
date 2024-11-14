@@ -29,6 +29,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 				)
 				.formLogin(login -> login
 						.loginPage("/login").permitAll()
+						.loginProcessingUrl("/login")
 						.successHandler(successHandler)
 						.usernameParameter("email")
 						.passwordParameter("password"))
