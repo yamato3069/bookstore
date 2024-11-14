@@ -82,5 +82,10 @@
 		WHERE user_id = #{userId}
 		AND book_id = #{bookId}
 	</delete>
+	
+	<delete id="refreshCart">
+		DELETE FROM cart
+		WHERE user_id = #{userId}
+	</delete>
 
 </mapper>
