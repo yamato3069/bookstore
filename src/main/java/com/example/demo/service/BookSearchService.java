@@ -20,5 +20,4 @@ public class BookSearchService {
 	public List<BookEntity> searchBooks(BookSearchDto bookSearchDto){
 		return bookSearchMapper.searchBooks(bookSearchDto);
 	}
-
 }

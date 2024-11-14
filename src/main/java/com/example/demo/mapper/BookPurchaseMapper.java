@@ -20,5 +20,7 @@ public interface BookPurchaseMapper {
 	public void updateCartQuantity(Integer userId, Integer bookId, Integer quantity);
 	
 	public void deleteCartItem(Integer userId, Integer bookId);
+	
+	public void refreshCart(Integer userId);
 
 }

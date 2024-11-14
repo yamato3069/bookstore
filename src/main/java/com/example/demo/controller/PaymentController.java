@@ -15,43 +15,43 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("payment")
 public class PaymentController {
 
-    private final PaymentService paymentService;
+	private final PaymentService paymentService;
 
-    public PaymentController(PaymentService paymentService) {
-        this.paymentService = paymentService;
-    }
+	public PaymentController(PaymentService paymentService) {
+		this.paymentService = paymentService;
+	}
 
-    @RequestMapping("paymentSelect")
-    public String selectPaymentMethod() {
-        return "payment/paymentSelect";
-    }
+	@RequestMapping("paymentSelect")
+	public String selectPaymentMethod() {
+		return "payment/paymentSelect";
+	}
 
-    @RequestMapping("creditCardSettings")
-    public String creditCardSettings() {
-        return "payment/creditCardSettings";
-    }
+	@RequestMapping("creditCardSettings")
+	public String creditCardSettings() {
+		return "payment/creditCardSettings";
+	}
 
-    @RequestMapping("paypalSettings")
-    public String paypalSettings() {
-        return "payment/paypalSettings";
-    }
+	@RequestMapping("paypalSettings")
+	public String paypalSettings() {
+		return "payment/paypalSettings";
+	}
 
-    @PostMapping("/purchase")
-    public String purchase(
-            @RequestParam String paymentType,
-            @RequestParam(required = false) String cardNumber,
-            @RequestParam(required = false) String cardHolder,
-            @RequestParam(required = false) String email,
-            HttpSession session,
-            Model model) {
-
-        UserEntity user = (UserEntity) session.getAttribute("user");
-        try {
-            paymentService.processPurchase(paymentType, cardNumber, cardHolder, email, user, session);
-            return "payment/success";
-        } catch (IllegalArgumentException e) {
-            model.addAttribute("errorMessage", "不明な支払い方法が指定されました: " + paymentType);
-            return "payment/paymentSelect";
-        }
-    }
+	@PostMapping("/purchase")
+	public String purchase(
+			@RequestParam String paymentType,
+			@RequestParam(required = false) String cardNumber,
+			@RequestParam(required = false) String cardHolder,
+			@RequestParam(required = false) String email,
+			HttpSession session,
+			Model model) {
+		
+		UserEntity user = (UserEntity) session.getAttribute("user");
+		try {
+			paymentService.processPurchase(paymentType, cardNumber, cardHolder, email, user, session);
+			return "payment/success";
+		} catch (IllegalArgumentException e) {
+			model.addAttribute("errorMessage", "不明な支払い方法が指定されました: " + paymentType);
+			return "payment/paymentSelect";
+		}
+	}
 }

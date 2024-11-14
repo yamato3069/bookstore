@@ -1,24 +1,24 @@
 package com.example.demo.controller;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.dto.BookSearchDto;
 import com.example.demo.entity.BookEntity;
-import com.example.demo.entity.CartEntity;
 import com.example.demo.entity.UserEntity;
-import com.example.demo.service.BookPurchaseService;
 import com.example.demo.service.BookSearchService;
+import com.example.demo.service.CartMethodClass;
 
 import jakarta.servlet.http.HttpSession;
 
@@ -26,99 +26,61 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("bookSearch")
 public class BookSearchController {
 
-	private final BookSearchService bookSearchService;
-	private final BookPurchaseService bookPurchaseService;
+    private final BookSearchService bookSearchService;
 
-	public BookSearchController(BookSearchService bookSearchService, BookPurchaseService bookPurchaseService) {
-		this.bookSearchService = bookSearchService;
-		this.bookPurchaseService = bookPurchaseService;
-	}
+    @Autowired
+    @Qualifier("loginCartService")
+    private CartMethodClass loginCartService;
 
-	@RequestMapping("regist")
-	public String regist(HttpSession session, Model model) {
-		UserEntity user = (UserEntity) session.getAttribute("user");
+    @Autowired
+    @Qualifier("guestCartService")
+    private CartMethodClass guestCartService;
 
-		model.addAttribute("user", user);
-		return "bookSearch/regist";
-	}
+    private CartMethodClass cartMethodClass;
 
-	@PostMapping("Search")
-	public String Search(BookSearchDto bookSearchDto, HttpSession session, Model model) {
+    public BookSearchController(BookSearchService bookSearchService) {
+        this.bookSearchService = bookSearchService;
+    }
 
-		List<BookEntity> bookList = bookSearchService.searchBooks(bookSearchDto);
-		model.addAttribute("bookList", bookList);
+    // リクエスト毎にユーザーを確認し、適切なカートサービスを選択
+    private void choiceUser(HttpSession session) {
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        if (user != null) {
+            this.cartMethodClass = loginCartService;
+        } else {
+            this.cartMethodClass = guestCartService;
+        }
+    }
 
-		return regist(session, model);
-	}
+    @RequestMapping("regist")
+    public String regist(HttpSession session, Model model) {
+        choiceUser(session); // リクエスト毎にユーザーを判定,インターセプターで判別できる？
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        model.addAttribute("user", user);
+        return "bookSearch/regist";
+    }
 
-	@GetMapping("getCart")
-	public ResponseEntity<Map<Integer, Map<String, Object>>> getCart(HttpSession session) {
-		UserEntity user = (UserEntity) session.getAttribute("user");
-	    
-	    if (user == null) {
-	        @SuppressWarnings("unchecked")
-	        Map<Integer, Map<String, Object>> cartList = (Map<Integer, Map<String, Object>>) session.getAttribute("cartList");
-	        return ResponseEntity.ok(cartList != null ? cartList : new HashMap<>());
-	    } else {
-	        // ログインユーザーの場合、DBからカート情報を取得
-	        List<CartEntity> cartEntities = bookPurchaseService.getCart(user.getUserId());
-	        Map<Integer, Map<String, Object>> cartList = new HashMap<>();
-	        
-	        for (CartEntity cartEntity : cartEntities) {
-	            Map<String, Object> item = new HashMap<>();
-	            item.put("imagePath", cartEntity.getImagePath());
-	            item.put("price", cartEntity.getPrice());
-	            item.put("title", cartEntity.getTitle());
-	            item.put("authorName", cartEntity.getAuthorName());
-	            item.put("quantity", cartEntity.getQuantity());
-	            cartList.put(cartEntity.getBookId(), item);
-	        }
-	        
-	        return ResponseEntity.ok(cartList);
-	    }
-	}
+    @PostMapping("Search")
+    public String Search(BookSearchDto bookSearchDto, HttpSession session, Model model) {
+        choiceUser(session); // リクエスト毎にユーザーを判定
+        List<BookEntity> bookList = bookSearchService.searchBooks(bookSearchDto);
+        model.addAttribute("bookList", bookList);
+        return regist(session, model);
+    }
 
-	@PostMapping("addToCart")
-	public ResponseEntity<Void> addToCart(@RequestParam("imagePath") String imagePath,
-			@RequestParam("bookId") Integer bookId,
-			@RequestParam("price") BigDecimal price,
-			@RequestParam("title") String title,
-			@RequestParam("authorName") String authorName,
-			@RequestParam("quantity") Integer quantity,
-			HttpSession session) {
+    @GetMapping("getCart")
+    public ResponseEntity<Map<Integer, Map<String, Object>>> getCart(HttpSession session) {
+        choiceUser(session); // リクエスト毎にユーザーを判定
+        Map<Integer, Map<String, Object>> cartList = cartMethodClass.getCart(session,
+                (UserEntity) session.getAttribute("user"));
+        return ResponseEntity.ok(cartList != null ? cartList : new HashMap<>());
+    }
 
-		UserEntity user = (UserEntity) session.getAttribute("user");
-
-		if (user == null) {
-	        // ゲストの場合
-	        @SuppressWarnings("unchecked")
-	        Map<Integer, Map<String, Object>> cartList = (Map<Integer, Map<String, Object>>) session.getAttribute("cartList");
-	        
-	        if (cartList == null) {
-	            cartList = new HashMap<>();
-	        }
-
-	        Map<String, Object> item = new HashMap<>();
-	        item.put("imagePath", imagePath);
-	        item.put("price", price);
-	        item.put("title", title);
-	        item.put("authorName", authorName);
-	        item.put("quantity", quantity);
-	        cartList.put(bookId, item);
-	        session.setAttribute("cartList", cartList);
-	    } else {
-	        // ログインしている場合
-	        CartEntity cartEntity = new CartEntity();
-	        cartEntity.setUserId(user.getUserId());
-	        cartEntity.setBookId(bookId);
-	        cartEntity.setQuantity(quantity);
-	        cartEntity.setPrice(price);
-	        cartEntity.setTitle(title);
-	        cartEntity.setAuthorName(authorName);
-	        cartEntity.setImagePath(imagePath);
-	        bookPurchaseService.addCart(cartEntity);
-	    }
-
-	    return ResponseEntity.noContent().build();
-	}
+    @PostMapping("addToCart")
+    public ResponseEntity<Void> addToCart(@RequestBody Map<String, Object> params, HttpSession session) {
+        choiceUser(session); // リクエスト毎にユーザーを判定
+        UserEntity user = (UserEntity) session.getAttribute("user");
+        cartMethodClass.addBookToCart(params, user, session);
+        return ResponseEntity.noContent().build();
+    }
 }

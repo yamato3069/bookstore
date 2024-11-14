@@ -28,4 +28,6 @@ public interface CartMethodClass {
 	
 	// アイテムをカートから削除する処理
     void removeItem(HttpSession session, UserEntity user, Integer bookId);
+    
+    void refreshCart(HttpSession session, UserEntity user);
 }

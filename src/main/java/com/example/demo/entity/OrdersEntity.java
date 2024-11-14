@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Timestamp;
 
 import lombok.Data;
 
@@ -12,7 +12,7 @@ public class OrdersEntity {
 	
 	public Integer userId;
 	
-	public Date orderDate;
+	public Timestamp orderDate;
 	
 	public BigDecimal totalAmount;
 
